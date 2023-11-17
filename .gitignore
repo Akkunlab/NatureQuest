@@ -1,0 +1,12 @@
+node_modules
+test
+dist
+
+*.log*
+.nuxt
+.nitro
+.cache
+.output
+.env
+.DS_Store
+.npmrc
