@@ -38,7 +38,7 @@ export default defineNuxtConfig({
     head: {
       charset: 'utf-16',
       viewport: 'width=device-width, initial-scale=1.0', 
-      title: '福島高専クイズコンテスト',
+      title: 'ay',
     }
   }
 })

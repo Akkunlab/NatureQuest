@@ -40,17 +40,3 @@ npm run preview
 ```
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
-
-## API
-
-| No. | Method | URI | Description |
-| --- | --- | --- | --- |
-| 1 | GET | /api/quizzes | すべてのクイズを取得 |
-| 2 | GET | /api/quizzes/{quizId} | 特定のクイズを取得 |
-| 3 | POST | /api/quizzes | 新しいクイズを作成 |
-| 4 | PUT | /api/quizzes/{quizId} | 特定のクイズを更新 |
-| 5 | DELETE | /api/quizzes/{quizId} | 特定のクイズを削除 |
-| 6 | GET | /api/users/{userId} | 特定のユーザの情報を取得 |
-| 7 | POST | /api/users/ | 新しいユーザを作成 |
-| 8 | PUT | /api/users/{userId} | 特定のユーザの情報を更新 |
-| 9 | DELETE | /api/users/{userId} | 特定のユーザを削除 |

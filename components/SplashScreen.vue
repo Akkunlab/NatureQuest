@@ -2,13 +2,6 @@
   <v-sheet class="splash-screen" @click="handleScreenClick($event)">
     <v-container class="splash-screen-inner">
 
-      <!-- オーディオ -->
-      <v-row class="audio ma-2">
-        <v-col>
-          <v-btn class="audio-btn" :icon="audioIcon" @click.stop="handleScreenClick($event)"></v-btn>
-        </v-col>
-      </v-row>
-
       <!-- メイン -->
       <v-main class="main">
 
@@ -22,7 +15,7 @@
         <!-- タイトル -->
         <v-row class="title text-h6">
           <v-col>
-            <p class="title-text">福島高専コンテスト</p>
+            <p class="title-text">AY</p>
           </v-col>
         </v-row>
 
@@ -38,7 +31,7 @@
       <!-- 著作権表示 -->
       <v-row class="copyright">
         <v-col>
-          <small class="copyright-text">&copy; 2023 Akkunlab</small>
+          <small class="copyright-text">&copy; 2023 Atsushi & Yushi</small>
         </v-col>
       </v-row>
 
@@ -48,29 +41,43 @@
 
 <script setup lang="ts">
 
-/* グローバル変数 */
-  const audioIcon = ref('mdi-volume-mute'); // オーディオアイコン
-  const audio = new Audio('audio/bgm.mp3'); // オーディオを作成
+  /* グローバル変数 */
 
-  audio.loop = true; // ループ再生にする
-  audio.muted = true; // ミュートにする
-  audio.autoplay = true; // 自動再生にする
+  // 位置情報
+  interface Position {
+    coords: {
+      latitude: number; // 緯度
+      longitude: number; // 経度
+    };
+  }
 
   /* スプラッシュ画面をクリックしたとき */
   const handleScreenClick = (event: PointerEvent): void => {
     const target = event.currentTarget as HTMLElement; // クリックした要素を取得
 
-    if (target.classList.contains('splash-screen')) { // スプラッシュ画面だったとき
+    useCurrentPosition(); // 現在地を取得する関数を実行
+    target.classList.add('fade-out'); // フェードアウトさせる
+    setTimeout(() => target.remove(), 1000); // 1秒後にスプラッシュ画面を削除
+  }
 
-      target.classList.add('fade-out'); // フェードアウトさせる
-      setTimeout(() => target.remove(), 1000); // 1秒後にスプラッシュ画面を削除
+  /* 現在地 */
+  const getCurrentPosition = (): Promise<Position> => {
+    return new Promise<Position>((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(
+        (position: Position) => resolve(position),
+        (error: GeolocationPositionError) => reject(error)
+      );
+    });
+  }
 
-    } else if (target.classList.contains('audio-btn')) { // オーディオだったとき
-
-      audio.currentTime = 0; // 最初から再生
-      audio.muted = !audio.muted; // ミュートを切り替える
-      audioIcon.value = audio.muted ? 'mdi-volume-mute' : 'mdi-volume-high'; // アイコンを切り替える
-
+  /* 現在地を取得する関数 */
+  const useCurrentPosition = async () => {
+    try {
+      const position: Position = await getCurrentPosition();
+      console.log('Current position:', position);
+      alert(`緯度: ${position.coords.latitude}\n経度: ${position.coords.longitude}`);
+    } catch (error) {
+      console.error('Error getting current position:', (error as Error).message);
     }
   }
 </script>
@@ -105,24 +112,6 @@
                      0 0 3px $background-color,
                      0 0 3px $background-color,
                      0 0 3px $background-color;
-      }
-
-      // オーディオ
-      .audio {
-        inset: 0 auto auto 0; // top right bottom left
-        position: absolute;
-        z-index: 1;
-
-        // オーディオボタン
-        .audio-btn {
-          color: $primary-color;
-          border: 2px solid transparent;
-          background-image: linear-gradient($background-color, $background-color),
-                            linear-gradient(135deg, $primary-color 0, $secondary-color-light 50%, $primary-color 100%);
-          background-origin: padding-box, border-box;
-          background-clip: padding-box, border-box;
-          box-shadow: 0 3px 3px $shadow-color;
-        }
       }
 
       // メイン
