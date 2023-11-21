@@ -59,9 +59,9 @@
   // 目的地の緯度経度
   const targetData = [
     { latitude: 36.5752, longitude: 140.646806 }, // { latitude: 36.572641705515785, longitude: 140.64342178806652 },
-    { latitude: 36.57309491631298, longitude: 140.64196471837982 },
-    { latitude: 36.57314230594724, longitude: 140.64133439924612 },
-    { latitude: 36.57238982884028, longitude: 140.64263244369673 },
+    // { latitude: 36.57309491631298, longitude: 140.64196471837982 },
+    // { latitude: 36.57314230594724, longitude: 140.64133439924612 },
+    // { latitude: 36.57238982884028, longitude: 140.64263244369673 },
   ];
 
   // 初期化
@@ -91,6 +91,7 @@
           if (distance.value <= 20) {
 
             // 2つの音源を再生順番に再生
+            audio.pause(); // 再生を停止
             audio = new Audio('./audio/get_mejiro.mp3');
             audio.loop = false; // ループ再生しない
             audio.play();
@@ -102,8 +103,8 @@
             targetNumber.value++; // 目的地の番号を更新
 
             // 目的地の番号が目的地の数を超えたら、目的地の番号を0に戻す
-            if (targetNumber.value >= targetData.length) {
-              targetNumber.value = 0;
+            if (targetNumber.value >= targetData.length - 1) {
+              finish(); // 終了処理
             }
             
           } else if (distance.value <= 100) {
@@ -119,7 +120,7 @@
             
           } else {
 
-            // 何もしない
+            audio.pause(); // 再生を停止
 
           }
         },

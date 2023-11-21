@@ -48,7 +48,7 @@
     setTimeout(() => target.remove(), 1000); // 1秒後にスプラッシュ画面を削除
 
     // start.mp3を再生
-    const audio = new Audio('./audio/start_2.mp3');
+    const audio = new Audio('./audio/start_iu_1.mp3');
     audio.play();
   }
 </script>
