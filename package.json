@@ -12,6 +12,7 @@
     "@mdi/font": "^7.2.96",
     "@mdi/js": "^7.2.96",
     "@nuxtjs/google-fonts": "^3.0.1",
+    "@types/googlemaps": "^3.43.3",
     "@types/node": "^18",
     "nuxt": "^3.5.1",
     "sass": "^1.62.1"

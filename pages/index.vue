@@ -7,19 +7,13 @@
   <div class="home background-fixed">
     <v-container class="home-inner fade-in">
 
-      <!-- タイトル -->
-      <v-row class="title">
-        <v-col>
-          <p class="title-text py-3 mx-2">ホーム</p>
-        </v-col>
-      </v-row>
-
       <!-- ステータス -->
       <v-row class="status mx-2 mt-3">
         <v-col class="px-0">
           <p class="status-text pl-8 pr-3">
-            <span class="pr-2">ポイント:</span>
-            <span>{{ 100 }}</span>
+            <span>対象物との距離:</span>
+            <span class="px-2">{{ Math.round(distance) }}</span>
+            <span>m</span>
           </p>
         </v-col>
       </v-row>
@@ -37,32 +31,96 @@
     </v-container>
   </div>
 
+  <!-- ダイアログ -->
+  <AppDialog ref="appDialogRef" />
+
 </template>
 
 <script setup lang="ts">
 
+  /* 型定義 */
+  interface GeolocationCoordinates {
+    latitude: number;
+    longitude: number;
+  }
+
   /* グローバル変数 */
+  const appDialogRef = ref(); // ダイアログ
+  
   let watchID: number;
-  let updatedCount = ref(0);
-  let isWatching = ref(false);
-  let content = ref('');
-  let targetLocation = { latitude: 35.681236, longitude: 139.767125 }; // ここに目的地の緯度経度を設定
+  let audio: HTMLAudioElement = new Audio('./audio/singing_mejiro.mp3');
+  const updatedCount = ref(0);
+  const isWatching = ref(false);
+  const distance = ref(0);
+  const targetNumber = ref(0); // 目的地の番号
+  const locationData: GeolocationCoordinates[] = []; // 位置情報を格納する配列
+  const timeData = { start: 0, end: 0 }; // 開始時刻と終了時刻を格納するオブジェクト
+
+  // 目的地の緯度経度
+  const targetData = [
+    { latitude: 36.5752, longitude: 140.646806 }, // { latitude: 36.572641705515785, longitude: 140.64342178806652 },
+    { latitude: 36.57309491631298, longitude: 140.64196471837982 },
+    { latitude: 36.57314230594724, longitude: 140.64133439924612 },
+    { latitude: 36.57238982884028, longitude: 140.64263244369673 },
+  ];
 
   // 初期化
-  const init = () => {
+  const init = (): void => {
     if (navigator.geolocation) {
+
+      timeData.start = Date.now(); // 開始時間を記録
+
       watchID = navigator.geolocation.watchPosition(
-        position => {
+        position => {  
+          const location = position.coords;
+          distance.value = getDistance(location, targetData[targetNumber.value]);
           updatedCount.value++;
           isWatching.value = true;
-          const location = position.coords;
-          const distance = getDistance(location, targetLocation);
-          console.log(location);
 
-          if(distance <= 0.1) {
-            content.value = 'もうすぐ目的地です！（100M以内）';
+          // 初回のみ現在地を目的地の配列に追加
+          if (!updatedCount.value) targetData.push({
+            latitude: location.latitude,
+            longitude: location.longitude
+          });
+
+          locationData.push(location);
+          console.log(location);
+          console.log(distance);
+
+          // 距離に応じて処理を分岐
+          if (distance.value <= 20) {
+
+            // 2つの音源を再生順番に再生
+            audio = new Audio('./audio/get_mejiro.mp3');
+            audio.loop = false; // ループ再生しない
+            audio.play();
+            audio.addEventListener('ended', () => {
+              audio = new Audio('./audio/explanation_mejiro.mp3');
+              audio.play();
+            });
+
+            targetNumber.value++; // 目的地の番号を更新
+
+            // 目的地の番号が目的地の数を超えたら、目的地の番号を0に戻す
+            if (targetNumber.value >= targetData.length) {
+              targetNumber.value = 0;
+            }
+            
+          } else if (distance.value <= 100) {
+
+            // singing.mp3を再生
+            if (audio.paused) {
+              audio = new Audio('./audio/singing_mejiro.mp3');
+              audio.loop = true; // ループ再生
+              audio.play();
+            }
+
+            audio.volume = 1 - distance.value / 100; // distance.valueが小さくなると、音が大きくなる
+            
           } else {
-            content.value = 'まだ目的地は先です。';
+
+            // 何もしない
+
           }
         },
         err => {
@@ -75,7 +133,7 @@
   }
 
   // ２点間の距離を取得する
-  const getDistance = (location1: GeolocationCoordinates, location2: typeof targetLocation) => {
+  const getDistance = (location1: GeolocationCoordinates, location2: GeolocationCoordinates): number => {
     const R = 6371; // km
     const diffLatitudeRadian = getRadian(location2.latitude - location1.latitude);
     const diffLongitudeRadian = getRadian(location2.longitude - location1.longitude);
@@ -87,15 +145,64 @@
               Math.cos(latitudeRadian) * Math.cos(longitudeRadian);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-    return R * c;
+    return R * c * 1000; // m
   }
 
   // 度数法から弧度法に変換する
-  const getRadian = (value: number) => {
+  const getRadian = (value: number): number => {
     return value * Math.PI / 180;
   }
 
+  // 総距離を計算する
+  const calculateTotalDistance = (locationData: GeolocationCoordinates[]): number => {
+    let totalDistance: number = 0;
+
+    for (let i = 0; i < locationData.length - 1; i++) {
+      totalDistance += getDistance(locationData[i], locationData[i + 1]);
+    }
+
+    return totalDistance;
+  }
+
+  // 終了処理
+  const finish = (): void => {
+    navigator.geolocation.clearWatch(watchID); // ウォッチを停止
+    timeData.end = Date.now(); // 終了時間を記録
+
+    const totalDistance = calculateTotalDistance(locationData); // 総距離を計算
+    const time = Math.round((timeData.end - timeData.start) / 1000); // 経過時間を計算
+
+    appDialogRef.value.menuList[0].value = Math.round(totalDistance); // メニューリストの歩いた距離を更新
+    appDialogRef.value.menuList[1].value = time; // メニューリストの時間を更新
+    appDialogRef.value.openDialog(); // ダイアログを開く
+
+    // 終了音を再生
+    audio = new Audio('./audio/result.mp3');
+    audio.play();
+
+    // Google Maps Platform Roads APIによる道路の取得
+    // const roadData = getRoadData(locationData);
+    // console.log(roadData);
+  }
+
+  // Google Maps Platform Roads APIによる道路の取得
+  // const getRoadData = async (locationData: GeolocationCoordinates[]) => {
+  //   const apiKey = '';
+  //   const path = locationData.map((location: GeolocationCoordinates) => `${location.latitude},${location.longitude}`).join('|'); // locationDataをpathに変換
+  //   const url = `https://roads.googleapis.com/v1/snapToRoads?interpolate=true&path=${encodeURIComponent(path)}&key=${apiKey}`;
+  //   const response = await fetch(url);
+
+  //   if (!response.ok) {
+  //     throw new Error(`HTTP error! status: ${response.status}`);
+  //   }
+
+  //   const data = await response.json();
+  //   console.log(data);
+  //   return data;
+  // }
+
   onMounted(init); // マウント時に実行
+  
 </script>
 
 <style lang="scss" scoped>
@@ -103,25 +210,6 @@
   /* ホーム画面 */
   .home {
     text-align: center;
-
-    // タイトル
-    .title {
-      inset: 0 auto auto 0; // top right bottom left
-      position: absolute;
-      color: $text-color-light;
-
-      .title-text {
-        width: 82px;
-      
-        &::after {
-          content: '';
-          display: block;
-          height: 1px;
-          border-radius: 1px;
-          background: $text-color-light;
-        }
-      }
-    }
 
     // ステータス
     .status {

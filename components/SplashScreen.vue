@@ -41,44 +41,15 @@
 
 <script setup lang="ts">
 
-  /* グローバル変数 */
-
-  // 位置情報
-  interface Position {
-    coords: {
-      latitude: number; // 緯度
-      longitude: number; // 経度
-    };
-  }
-
   /* スプラッシュ画面をクリックしたとき */
   const handleScreenClick = (event: PointerEvent): void => {
     const target = event.currentTarget as HTMLElement; // クリックした要素を取得
-
-    useCurrentPosition(); // 現在地を取得する関数を実行
     target.classList.add('fade-out'); // フェードアウトさせる
     setTimeout(() => target.remove(), 1000); // 1秒後にスプラッシュ画面を削除
-  }
 
-  /* 現在地 */
-  const getCurrentPosition = (): Promise<Position> => {
-    return new Promise<Position>((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(
-        (position: Position) => resolve(position),
-        (error: GeolocationPositionError) => reject(error)
-      );
-    });
-  }
-
-  /* 現在地を取得する関数 */
-  const useCurrentPosition = async () => {
-    try {
-      const position: Position = await getCurrentPosition();
-      console.log('Current position:', position);
-      alert(`緯度: ${position.coords.latitude}\n経度: ${position.coords.longitude}`);
-    } catch (error) {
-      console.error('Error getting current position:', (error as Error).message);
-    }
+    // start.mp3を再生
+    const audio = new Audio('./audio/start_2.mp3');
+    audio.play();
   }
 </script>
 
