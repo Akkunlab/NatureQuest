@@ -29,7 +29,7 @@
               </template>
               <v-list-item-title>
                 <span>{{ item.text }}:</span>
-                <span class="mx-4">{{ item.value }}</span>
+                <span class="mx-2">{{ item.value }}</span>
                 <span>{{ item.unit }}</span>
               </v-list-item-title>
             </v-list-item>
