@@ -1,7 +1,7 @@
 <template>
 
   <!-- スプラッシュ画面 -->
-  <SplashScreen/>
+  <SplashScreen :init="init" />
 
   <!-- ホーム画面 -->
   <div class="home background-fixed">
@@ -58,7 +58,7 @@
 
   // 目的地の緯度経度
   const targetData = [
-    { latitude: 36.572, longitude: 140.646806 },
+    { latitude: 36.575784218773194, longitude: 140.63995590877707 },
     // { latitude: 36.572641705515785, longitude: 140.64342178806652 },
     // { latitude: 36.57309491631298, longitude: 140.64196471837982 },
     // { latitude: 36.57314230594724, longitude: 140.64133439924612 },
@@ -85,6 +85,7 @@
           });
 
           locationData.push(location);
+          console.log(location);
 
           // 距離に応じて処理を分岐
           if (distance.value <= 20) {
@@ -93,25 +94,28 @@
             audio.pause(); // 再生を停止
             audio = new Audio('./audio/get_mejiro.mp3');
             audio.loop = false; // ループ再生しない
+            audio.currentTime = 0;
             audio.play();
 
             audio.addEventListener('ended', () => {
               audio = new Audio('./audio/explanation_mejiro.mp3');
+              audio.currentTime = 0;
               audio.play();
             });
 
-            targetNumber.value++; // 目的地の番号を更新
+            // targetNumber.value++; // 目的地の番号を更新
 
-            if (targetNumber.value === targetData.length) {
-              audio.pause(); // 再生を停止
+            // if (targetNumber.value === targetData.length) {
 
-              audio.addEventListener('ended', () => {
-                audio = new Audio('./audio/get_all.mp3');
-                audio.play();
-              });
-            } else if (targetNumber.value > targetData.length) {
-              finish(); // 終了処理
-            }
+            //   audio.addEventListener('ended', () => {
+            //     audio = new Audio('./audio/get_all.mp3');
+            //     audio.currentTime = 0;
+            //     audio.play();
+            //   });
+
+            // } else if (targetNumber.value > targetData.length) {
+            //   finish(); // 終了処理
+            // }
             
           } else if (distance.value <= 100) {
 
@@ -119,6 +123,7 @@
             if (audio.paused) {
               audio = new Audio('./audio/singing_mejiro.mp3');
               audio.loop = true; // ループ再生
+              audio.currentTime = 0;
               audio.play();
             }
 
@@ -208,7 +213,7 @@
   //   return data;
   // }
 
-  onMounted(init); // マウント時に実行
+  // onMounted(init); // マウント時に実行
   
 </script>
 

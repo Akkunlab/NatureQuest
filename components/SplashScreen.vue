@@ -41,6 +41,10 @@
 
 <script setup lang="ts">
 
+  const props = defineProps({
+    init: Function,
+  });
+
   /* スプラッシュ画面をクリックしたとき */
   const handleScreenClick = (event: PointerEvent): void => {
     const target = event.currentTarget as HTMLElement; // クリックした要素を取得
@@ -50,6 +54,7 @@
     // start.mp3を再生
     const audio = new Audio('./audio/start_iu_1.mp3');
     audio.play();
+    props.init?.();
   }
 </script>
 
