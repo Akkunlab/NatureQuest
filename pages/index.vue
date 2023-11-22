@@ -57,7 +57,8 @@
   
   let watchID: number;
   let audio: HTMLAudioElement = new Audio('./audio/singing_mejiro.mp3');
-  let audio_near_far: HTMLAudioElement = new Audio('./audio/near.mp3');
+  let audio_near: HTMLAudioElement = new Audio('./audio/near.mp3');
+  let audio_far: HTMLAudioElement = new Audio('./audio/far.mp3');
 
   const updatedCount = ref(0);
   const isWatching = ref(false);
@@ -131,12 +132,12 @@
 
               console.log(distance.value , previousDistance.value);
               if (distance.value < previousDistance.value) { // 距離が減った場合
-                audio_near_far = new Audio('./audio/near.mp3');
-                audio_near_far.play();
-                message.value = '近くなりました';
+                audio_near = new Audio('./audio/near.mp3');
+                audio_near.play();
+                message.value = '近づきました';
               } else if (distance.value > previousDistance.value) { // 距離が増えた場合
-                audio_near_far = new Audio('./audio/far.mp3');
-                audio_near_far.play();
+                audio_far = new Audio('./audio/far.mp3');
+                audio_far.play();
                 message.value = '遠くなりました';
               }
             }
