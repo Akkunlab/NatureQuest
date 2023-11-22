@@ -94,7 +94,7 @@
           console.log(location);
 
           // 距離に応じて処理を分岐
-          if (distance.value <= 20) {
+          if (distance.value <= 10) {
 
             if (audio.src.includes('singing_mejiro')) {
               audio.pause(); // 再生を停止
