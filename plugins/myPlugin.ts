@@ -10,11 +10,6 @@ export default defineNuxtPlugin(() => {
 
         target.classList.add('fade-out'); // フェードアウト
         setTimeout(async() => await navigateTo({ path, query }), 400); // 画面遷移
-      },
-
-      // バリデーション
-      requiredValidation: (value: any) => {
-        return !!value || '必ず入力してください';
       }
     }
   }

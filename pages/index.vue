@@ -49,7 +49,8 @@
   
   let watchID: number;
   let audio: HTMLAudioElement = new Audio('./audio/singing_mejiro.mp3');
-  let audio2: HTMLAudioElement = new Audio('./audio/singing_mejiro.mp3');
+  let audio_near_far: HTMLAudioElement = new Audio('./audio/near.mp3');
+
   const updatedCount = ref(0);
   const isWatching = ref(false);
   const distance = ref(0);
@@ -58,13 +59,14 @@
   const timeData = { start: 0, end: 0 }; // 開始時刻と終了時刻を格納するオブジェクト
 
   // 目的地の緯度経度
-  const targetData = [
-    { latitude: 36.575784218773194, longitude: 140.63995590877707 },
-    // { latitude: 36.572641705515785, longitude: 140.64342178806652 },
-    // { latitude: 36.57309491631298, longitude: 140.64196471837982 },
-    // { latitude: 36.57314230594724, longitude: 140.64133439924612 },
-    // { latitude: 36.57238982884028, longitude: 140.64263244369673 },
-  ];
+  const targetData = [{ latitude: 36.575784218773194, longitude: 140.63995590877707 }];
+
+  // const targetData = [
+  //   { latitude: 36.572641705515785, longitude: 140.64342178806652 },
+  //   { latitude: 36.57309491631298, longitude: 140.64196471837982 },
+  //   { latitude: 36.57314230594724, longitude: 140.64133439924612 },
+  //   { latitude: 36.57238982884028, longitude: 140.64263244369673 },
+  // ];
 
   // 初期化
   const init = (): void => {
@@ -74,8 +76,11 @@
 
       watchID = navigator.geolocation.watchPosition(
         position => {  
+
+          let previousVolume: number = audio.volume; // 前回の音量
           const location = position.coords;
-          distance.value = getDistance(location, targetData[targetNumber.value]);
+
+          distance.value = getDistance(location, targetData[targetNumber.value]); // ２点間の距離を取得
           updatedCount.value++;
           isWatching.value = true;
 
@@ -91,42 +96,41 @@
           // 距離に応じて処理を分岐
           if (distance.value <= 20) {
 
-            audio.pause(); // 再生を停止
-            audio = new Audio('./audio/get_mejiro.mp3');
-            audio.loop = false; // ループ再生しない
-            audio.play();
+            if (audio.src.includes('singing_mejiro')) {
+              audio.pause(); // 再生を停止
+              audio.loop = false; // ループ再生しない
+              audio = new Audio('./audio/get_mejiro.mp3');
+              audio.play();
 
-            audio.addEventListener('ended', () => {
-              audio2 = new Audio('./audio/explanation_mejiro.mp3');
-              audio2.play();
-            });
-
-            audio2.addEventListener('ended', () => {
-              finish(); // 終了処理
-            });
-
-            // targetNumber.value++; // 目的地の番号を更新
-
-            // if (targetNumber.value === targetData.length) {
-
-            //   audio.addEventListener('ended', () => {
-            //     audio = new Audio('./audio/get_all.mp3');
-            //     audio.currentTime = 0;
-            //     audio.play();
-            //   });
-
-            // } else if (targetNumber.value > targetData.length) {
-            //   finish(); // 終了処理
-            // }
+              audio.addEventListener('ended', () => {
+                audio = new Audio('./audio/explanation_mejiro.mp3');
+                audio.play();
+                audio.addEventListener('ended', finish);
+              });
+            }
             
           } else if (distance.value <= 100) {
 
-            audio.pause(); // 再生を停止
-            audio = new Audio('./audio/singing_mejiro.mp3');
-            audio.loop = true; // ループ再生
-            audio.play();
+            if (audio.paused) {
+              audio = new Audio('./audio/singing_mejiro.mp3');
+              audio.loop = true; // ループ再生
+              audio.play();
+            }
 
-            audio.volume = 1 - distance.value / 100; // distance.valueが小さくなると、音が大きくなる
+            if (audio.src.includes('singing_mejiro')) {
+              previousVolume = audio.volume; // 前回の音量
+              audio.volume = Math.round((1 - distance.value / 100) * 100) / 100; // distance.valueが小さくなると、音が大きくなる
+
+              if (audio.volume > previousVolume) { // 音量が増えた場合
+                audio_near_far = new Audio('./audio/near.mp3');
+                audio_near_far.play();
+                console.log('近くなりました');
+              } else if (audio.volume < previousVolume) { // 音量が減った場合
+                audio_near_far = new Audio('./audio/far.mp3');
+                audio_near_far.play();
+                console.log('遠くなりました');
+              }
+            }
             
           } else {
 
