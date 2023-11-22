@@ -18,6 +18,14 @@
         </v-col>
       </v-row>
 
+      <v-row class="status mx-2 mt-12">
+        <v-col class="px-0">
+          <p class="status-text pl-8 pr-3">
+            <span class="px-2">{{ message }}</span>
+          </p>
+        </v-col>
+      </v-row>
+
       <!-- 背景 -->
       <v-row class="background">
         <v-sheet class="background-inner"></v-sheet>
@@ -51,7 +59,6 @@
   let audio: HTMLAudioElement = new Audio('./audio/singing_mejiro.mp3');
   let audio_near_far: HTMLAudioElement = new Audio('./audio/near.mp3');
 
-
   const updatedCount = ref(0);
   const isWatching = ref(false);
   const distance = ref(0);
@@ -59,6 +66,7 @@
   const targetNumber = ref(0); // 目的地の番号
   const locationData: GeolocationCoordinates[] = []; // 位置情報を格納する配列
   const timeData = { start: 0, end: 0 }; // 開始時刻と終了時刻を格納するオブジェクト
+  const message = ref(''); // メッセージ
 
   // 目的地の緯度経度
   const targetData = [{ latitude: 36.575784218773194, longitude: 140.63995590877707 }];
@@ -121,14 +129,15 @@
             if (audio.src.includes('singing_mejiro')) {
               audio.volume = Math.round((1 - distance.value / 100) * 100) / 100; // distance.valueが小さくなると、音が大きくなる
 
-              if (distance.value > previousDistance.value) { // 距離が増えた場合
+              console.log(distance.value , previousDistance.value);
+              if (distance.value < previousDistance.value) { // 距離が減った場合
                 audio_near_far = new Audio('./audio/near.mp3');
                 audio_near_far.play();
-                console.log('近くなりました');
-              } else if (distance.value < previousDistance.value) { // 距離が減った場合
+                message.value = '近くなりました';
+              } else if (distance.value > previousDistance.value) { // 距離が増えた場合
                 audio_near_far = new Audio('./audio/far.mp3');
                 audio_near_far.play();
-                console.log('遠くなりました');
+                message.value = '遠くなりました';
               }
             }
             
