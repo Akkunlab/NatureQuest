@@ -132,11 +132,9 @@
 
               console.log(distance.value , previousDistance.value);
               if (distance.value < previousDistance.value) { // 距離が減った場合
-                audio_near = new Audio('./audio/near.mp3');
                 audio_near.play();
                 message.value = '近づきました';
               } else if (distance.value > previousDistance.value) { // 距離が増えた場合
-                audio_far = new Audio('./audio/far.mp3');
                 audio_far.play();
                 message.value = '遠くなりました';
               }
