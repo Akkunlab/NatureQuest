@@ -70,10 +70,10 @@
   const message = ref('まだまだ距離があります'); // メッセージ
 
   // 目的地の緯度経度
-  const targetData = [{ latitude: 36.572641705515785, longitude: 140.64342178806652 }];
+  const targetData = [{ latitude: 36.5733175, longitude: 140.6397485 }];
 
   // const targetData = [
-  //   { latitude: 36.572641705515785, longitude: 140.64342178806652 },
+  //   { latitude: 36.572641705515785, longitude: 140.6397485 },
   //   { latitude: 36.57309491631298, longitude: 140.64196471837982 },
   //   { latitude: 36.57314230594724, longitude: 140.64133439924612 },
   //   { latitude: 36.57238982884028, longitude: 140.64263244369673 },
