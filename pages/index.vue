@@ -70,7 +70,7 @@
   const message = ref('まだまだ距離があります'); // メッセージ
 
   // 目的地の緯度経度
-  const targetData = [{ latitude: 36.575784218773194, longitude: 140.63995590877707 }];
+  const targetData = [{ latitude: 36.572641705515785, longitude: 140.64342178806652 }];
 
   // const targetData = [
   //   { latitude: 36.572641705515785, longitude: 140.64342178806652 },
@@ -131,10 +131,10 @@
               audio.volume = Math.round((1 - distance.value / 100) * 100) / 100; // distance.valueが小さくなると、音が大きくなる
 
               console.log(distance.value , previousDistance.value);
-              if (distance.value < previousDistance.value - 5) { // 距離が減った場合
+              if (distance.value < previousDistance.value) { // 距離が減った場合
                 audio_near.play();
                 message.value = '近づきました';
-              } else if (distance.value - 5 > previousDistance.value) { // 距離が増えた場合
+              } else if (distance.value > previousDistance.value) { // 距離が増えた場合
                 audio_far.play();
                 message.value = '遠くなりました';
               }
