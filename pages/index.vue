@@ -12,7 +12,7 @@
         <v-col class="px-0">
           <p class="status-text pl-8 pr-3">
             <span>対象物との距離:</span>
-            <span class="px-2">{{ Math.round(distance) }}</span>
+            <span class="px-2">{{ distance }}</span>
             <span>m</span>
           </p>
         </v-col>
@@ -51,9 +51,11 @@
   let audio: HTMLAudioElement = new Audio('./audio/singing_mejiro.mp3');
   let audio_near_far: HTMLAudioElement = new Audio('./audio/near.mp3');
 
+
   const updatedCount = ref(0);
   const isWatching = ref(false);
   const distance = ref(0);
+  const previousDistance = ref(0); // 前回の距離
   const targetNumber = ref(0); // 目的地の番号
   const locationData: GeolocationCoordinates[] = []; // 位置情報を格納する配列
   const timeData = { start: 0, end: 0 }; // 開始時刻と終了時刻を格納するオブジェクト
@@ -77,7 +79,6 @@
       watchID = navigator.geolocation.watchPosition(
         position => {  
 
-          let previousVolume: number = audio.volume; // 前回の音量
           const location = position.coords;
 
           distance.value = getDistance(location, targetData[targetNumber.value]); // ２点間の距離を取得
@@ -118,14 +119,13 @@
             }
 
             if (audio.src.includes('singing_mejiro')) {
-              previousVolume = audio.volume; // 前回の音量
               audio.volume = Math.round((1 - distance.value / 100) * 100) / 100; // distance.valueが小さくなると、音が大きくなる
 
-              if (audio.volume > previousVolume) { // 音量が増えた場合
+              if (distance.value > previousDistance.value) { // 距離が増えた場合
                 audio_near_far = new Audio('./audio/near.mp3');
                 audio_near_far.play();
                 console.log('近くなりました');
-              } else if (audio.volume < previousVolume) { // 音量が減った場合
+              } else if (distance.value < previousDistance.value) { // 距離が減った場合
                 audio_near_far = new Audio('./audio/far.mp3');
                 audio_near_far.play();
                 console.log('遠くなりました');
@@ -137,6 +137,8 @@
             audio.pause(); // 再生を停止
 
           }
+
+          previousDistance.value = distance.value; // 前回の距離を更新
         },
         err => {
           isWatching.value = false;
@@ -160,7 +162,7 @@
               Math.cos(latitudeRadian) * Math.cos(longitudeRadian);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-    return R * c * 1000; // m
+    return Math.round(R * c * 1000); // m
   }
 
   // 度数法から弧度法に変換する
