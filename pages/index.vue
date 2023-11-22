@@ -119,7 +119,7 @@
               });
             }
             
-          } else if (distance.value <= 100) {
+          } else if (distance.value <= 300) {
 
             if (audio.paused) {
               audio = new Audio('./audio/singing_mejiro.mp3');
