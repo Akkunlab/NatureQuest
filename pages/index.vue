@@ -91,17 +91,17 @@
           if (distance.value <= 20) {
 
             // 2つの音源を再生順番に再生
-            audio.pause(); // 再生を停止
+            // audio.pause(); // 再生を停止
             audio = new Audio('./audio/get_mejiro.mp3');
-            audio.loop = false; // ループ再生しない
-            audio.currentTime = 0;
+            // audio.loop = false; // ループ再生しない
+            // audio.currentTime = 0;
             audio.play();
 
-            audio.addEventListener('ended', () => {
-              audio = new Audio('./audio/explanation_mejiro.mp3');
-              audio.currentTime = 0;
-              audio.play();
-            });
+            // audio.addEventListener('ended', () => {
+            //   audio = new Audio('./audio/explanation_mejiro.mp3');
+            //   audio.currentTime = 0;
+            //   audio.play();
+            // });
 
             // targetNumber.value++; // 目的地の番号を更新
 
