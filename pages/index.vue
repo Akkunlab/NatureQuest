@@ -67,7 +67,7 @@
   const targetNumber = ref(0); // 目的地の番号
   const locationData: GeolocationCoordinates[] = []; // 位置情報を格納する配列
   const timeData = { start: 0, end: 0 }; // 開始時刻と終了時刻を格納するオブジェクト
-  const message = ref(''); // メッセージ
+  const message = ref('まだまだ距離があります'); // メッセージ
 
   // 目的地の緯度経度
   const targetData = [{ latitude: 36.575784218773194, longitude: 140.63995590877707 }];
@@ -131,10 +131,10 @@
               audio.volume = Math.round((1 - distance.value / 100) * 100) / 100; // distance.valueが小さくなると、音が大きくなる
 
               console.log(distance.value , previousDistance.value);
-              if (distance.value < previousDistance.value) { // 距離が減った場合
+              if (distance.value < previousDistance.value - 5) { // 距離が減った場合
                 audio_near.play();
                 message.value = '近づきました';
-              } else if (distance.value > previousDistance.value) { // 距離が増えた場合
+              } else if (distance.value - 5 > previousDistance.value) { // 距離が増えた場合
                 audio_far.play();
                 message.value = '遠くなりました';
               }
