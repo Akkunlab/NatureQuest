@@ -49,6 +49,7 @@
   
   let watchID: number;
   let audio: HTMLAudioElement = new Audio('./audio/singing_mejiro.mp3');
+  let audio2: HTMLAudioElement = new Audio('./audio/singing_mejiro.mp3');
   const updatedCount = ref(0);
   const isWatching = ref(false);
   const distance = ref(0);
@@ -90,18 +91,19 @@
           // 距離に応じて処理を分岐
           if (distance.value <= 20) {
 
-            // 2つの音源を再生順番に再生
             audio.pause(); // 再生を停止
             audio = new Audio('./audio/get_mejiro.mp3');
-            // audio.loop = false; // ループ再生しない
-            // audio.currentTime = 0;
+            audio.loop = false; // ループ再生しない
             audio.play();
 
-            // audio.addEventListener('ended', () => {
-            //   audio = new Audio('./audio/explanation_mejiro.mp3');
-            //   audio.currentTime = 0;
-            //   audio.play();
-            // });
+            audio.addEventListener('ended', () => {
+              audio2 = new Audio('./audio/explanation_mejiro.mp3');
+              audio2.play();
+            });
+
+            audio2.addEventListener('ended', () => {
+              finish(); // 終了処理
+            });
 
             // targetNumber.value++; // 目的地の番号を更新
 
@@ -119,13 +121,10 @@
             
           } else if (distance.value <= 100) {
 
-            // singing.mp3を再生
-            if (audio.paused) {
-              audio = new Audio('./audio/singing_mejiro.mp3');
-              audio.loop = true; // ループ再生
-              audio.currentTime = 0;
-              audio.play();
-            }
+            audio.pause(); // 再生を停止
+            audio = new Audio('./audio/singing_mejiro.mp3');
+            audio.loop = true; // ループ再生
+            audio.play();
 
             audio.volume = 1 - distance.value / 100; // distance.valueが小さくなると、音が大きくなる
             
