@@ -1,4 +1,5 @@
 <template>
+  <!-- <v-sheet class="splash-screen"> -->
   <v-sheet class="splash-screen" @click="handleScreenClick($event)">
     <v-container class="splash-screen-inner">
 
@@ -15,7 +16,7 @@
         <!-- タイトル -->
         <v-row class="title text-h6">
           <v-col>
-            <p class="title-text">AY</p>
+            <p class="title-text">NatureQuest</p>
           </v-col>
         </v-row>
 
@@ -40,22 +41,23 @@
 </template>
 
 <script setup lang="ts">
+  import { audioPlayer } from '../audio';
 
   const props = defineProps({
     init: Function,
   });
 
   /* スプラッシュ画面をクリックしたとき */
-  const handleScreenClick = (event: PointerEvent): void => {
+  const handleScreenClick = async(event: PointerEvent) => {
     const target = event.currentTarget as HTMLElement; // クリックした要素を取得
     target.classList.add('fade-out'); // フェードアウトさせる
     setTimeout(() => target.remove(), 1000); // 1秒後にスプラッシュ画面を削除
 
     // start.mp3を再生
-    const audio = new Audio('./audio/start_iu_1.mp3');
-    audio.play();
+    await audioPlayer.loadAudioFile('./audio/start_iu_1.mp3');
+    audioPlayer.play();
     props.init?.();
-  }
+}
 </script>
 
 <style lang="scss" scoped>

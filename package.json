@@ -1,5 +1,5 @@
 {
-  "name": "ay",
+  "name": "naturequest",
   "private": true,
   "scripts": {
     "build": "nuxt build",

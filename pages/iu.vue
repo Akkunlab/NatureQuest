@@ -72,14 +72,13 @@
   const distanceTh = 300; // 距離の閾値
 
   // 目的地の緯度経度
-  const targetData = [{ latitude: 36.36509930953256, longitude: 140.4784272715081 }];
-
+  const targetData = [{ latitude: 36.57381832781865, longitude: 140.64019046086327 }];
   // const targetData = [
   //   { latitude: 36.572641705515785, longitude: 140.6397485 },
   //   { latitude: 36.57309491631298, longitude: 140.64196471837982 },
   //   { latitude: 36.57314230594724, longitude: 140.64133439924612 },
   //   { latitude: 36.57238982884028, longitude: 140.64263244369673 },
-// ];
+  // ];
 
   // 初期化
   const init = (): void => {
@@ -123,7 +122,7 @@
               });
             }
             
-          } else if (distance.value <= distanceTh) {
+          } else if (distance.value <= 300) {
 
             if (audio.paused) {
               audio = new Audio('./audio/singing_mejiro.mp3');
