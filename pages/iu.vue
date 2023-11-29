@@ -69,7 +69,7 @@
   const locationData: GeolocationCoordinates[] = []; // 位置情報を格納する配列
   const timeData = { start: 0, end: 0 }; // 開始時刻と終了時刻を格納するオブジェクト
   const message = ref('まだまだ距離があります'); // メッセージ
-  const distanceTh = 300; // 距離の閾値
+  const distanceTh = 50000; // 距離の閾値
 
   // 目的地の緯度経度
   const targetData = [{ latitude: 36.57381832781865, longitude: 140.64019046086327 }];
@@ -81,9 +81,11 @@
   // ];
 
   // 初期化
-  const init = (): void => {
+  const init = async() => {
     if (navigator.geolocation) {
 
+      await audioPlayer.loadAudioFile('./audio/start_park_1.mp3');
+      audioPlayer.play();
       timeData.start = Date.now(); // 開始時間を記録
 
       watchID = navigator.geolocation.watchPosition(
