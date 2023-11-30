@@ -126,10 +126,10 @@
               audio.volume = Math.round((1 - distance.value / distanceTh) * distanceTh) / distanceTh; // distance.valueが小さくなると、音が大きくなる
 
               console.log(distance.value , previousDistance.value);
-              if (5 + distance.value < previousDistance.value) { // 距離が減った場合
+              if (distance.value < previousDistance.value) { // 距離が減った場合
                 audio_near.play();
                 message.value = '近づきました';
-              } else if (distance.value > previousDistance.value + 5) { // 距離が増えた場合
+              } else if (distance.value > previousDistance.value) { // 距離が増えた場合
                 audio_far.play();
                 message.value = '遠くなりました';
               }
@@ -141,7 +141,7 @@
 
           }
 
-          previousDistance.value = distance.value; // 前回の距離を更新
+          if (Math.abs(distance.value - previousDistance.value) > 5) previousDistance.value = distance.value; // 前回の距離を更新
         },
         err => {
           isWatching.value = false;
