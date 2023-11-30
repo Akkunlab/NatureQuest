@@ -127,11 +127,17 @@
 
               console.log(distance.value , previousDistance.value);
               if (distance.value < previousDistance.value) { // 距離が減った場合
-                audio_near.play();
-                message.value = '近づきました';
+
+                // distance.value が 5の倍数のとき
+                if (distance.value % 5 === 0) {
+                  audio_near.play();
+                  message.value = '近づきました';
+                }
               } else if (distance.value > previousDistance.value) { // 距離が増えた場合
-                audio_far.play();
-                message.value = '遠くなりました';
+                if (distance.value % 5 === 0) {
+                  audio_near.play();
+                  message.value = '遠くなりました';
+                }
               }
             }
             
@@ -141,7 +147,7 @@
 
           }
 
-          if (Math.abs(distance.value - previousDistance.value) > 5) previousDistance.value = distance.value; // 前回の距離を更新
+          previousDistance.value = distance.value; // 前回の距離を更新
         },
         err => {
           isWatching.value = false;
