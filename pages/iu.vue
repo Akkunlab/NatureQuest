@@ -63,7 +63,8 @@
 
   const updatedCount = ref(0);
   const isWatching = ref(false);
-  const distance = ref(0);
+  const isgoal = ref(false);
+  const distance = ref(0); 
   const previousDistance = ref(0); // 前回の距離
   const targetNumber = ref(0); // 目的地の番号
   const locationData: GeolocationCoordinates[] = []; // 位置情報を格納する配列
@@ -84,12 +85,11 @@
   const init = async() => {
     if (navigator.geolocation) {
 
-      await audioPlayer.loadAudioFile('./audio/start_iu_1.mp3');
-      audioPlayer.play();
+      audioPlay('./audio/start_iu_1.mp3'); // 開始音を再生
       timeData.start = Date.now(); // 開始時間を記録
 
       watchID = navigator.geolocation.watchPosition(
-        position => {  
+        async (position) => {  
 
           const location = position.coords;
 
@@ -108,23 +108,13 @@
 
           // 距離に応じて処理を分岐
           if (distance.value <= 10) {
-
-            if (audio.src.includes('singing_mejiro')) {
-              // audio.pause(); // 再生を停止
-              // audio.loop = false; // ループ再生しない
-              // audio = new Audio('./audio/get_mejiro.mp3');
-              // audio.play();
-
-              audioPlay('./audio/get_mejiro.mp3');
-
-              audio.addEventListener('ended', () => {
-                audio = new Audio('./audio/explanation_mejiro.mp3');
-                audio.play();
-                audio.addEventListener('ended', finish);
-              });
-            }
             
-          } else if (distance.value <= 300) {
+            if (isgoal.value) return;
+            await audioPlay('./audio/get_mejiro_2.mp3'); // 説明を再生
+            finish();
+            isgoal.value = true;
+            
+          } else if (distance.value <= distanceTh) {
 
             if (audio.paused) {
               audio = new Audio('./audio/singing_mejiro.mp3');
@@ -136,10 +126,10 @@
               audio.volume = Math.round((1 - distance.value / distanceTh) * distanceTh) / distanceTh; // distance.valueが小さくなると、音が大きくなる
 
               console.log(distance.value , previousDistance.value);
-              if (distance.value < previousDistance.value) { // 距離が減った場合
+              if (5 + distance.value < previousDistance.value) { // 距離が減った場合
                 audio_near.play();
                 message.value = '近づきました';
-              } else if (distance.value > previousDistance.value) { // 距離が増えた場合
+              } else if (distance.value > previousDistance.value + 5) { // 距離が増えた場合
                 audio_far.play();
                 message.value = '遠くなりました';
               }

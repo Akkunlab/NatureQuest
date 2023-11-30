@@ -1,8 +1,8 @@
   /* オーディオ */
   class AudioPlayer {
-    private audioContext: AudioContext;
+    audioContext: AudioContext;
     private buffer: AudioBuffer | null;
-    private sourceNodes: AudioBufferSourceNode[];
+    sourceNodes: AudioBufferSourceNode[];
 
     constructor() {
       this.audioContext = new AudioContext();
@@ -37,6 +37,14 @@
       } else {
         console.error('Audio buffer is not loaded.');
       }
+    }
+
+    stopAll(): void {
+      // すべての音源を停止
+      this.sourceNodes.forEach((source) => {
+        source.stop();
+      });
+      this.sourceNodes = [];
     }
   }
 
