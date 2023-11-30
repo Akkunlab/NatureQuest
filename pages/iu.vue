@@ -131,11 +131,13 @@
                 // distance.value が 5の倍数のとき
                 if (distance.value % 5 === 0) {
                   audio_near.play();
+                  await audioPlay('./audio/near.mp3'); // 説明を再生
                   message.value = '近づきました';
                 }
               } else if (distance.value > previousDistance.value) { // 距離が増えた場合
                 if (distance.value % 5 === 0) {
                   audio_near.play();
+                  await audioPlay('./audio/far.mp3'); // 説明を再生
                   message.value = '遠くなりました';
                 }
               }
