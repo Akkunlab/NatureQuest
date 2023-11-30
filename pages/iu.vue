@@ -84,7 +84,7 @@
   const init = async() => {
     if (navigator.geolocation) {
 
-      await audioPlayer.loadAudioFile('./audio/start_park_1.mp3');
+      await audioPlayer.loadAudioFile('./audio/start_iu_1.mp3');
       audioPlayer.play();
       timeData.start = Date.now(); // 開始時間を記録
 
