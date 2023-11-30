@@ -87,6 +87,7 @@
     if (navigator.geolocation) {
 
       audioPlay('./audio/start_park_1.mp3'); // 開始音を再生
+      audioPlay('./audio/singing_mejiro_2.mp3'); // 開始音を再生
       timeData.start = Date.now(); // 開始時間を記録
 
       watchID = navigator.geolocation.watchPosition(
@@ -137,22 +138,30 @@
             
           } else if (distance.value <= distanceTh) {
 
-            if (audio.paused) {
-              audio = new Audio('./audio/singing_mejiro.mp3');
-              audio.loop = true; // ループ再生
-              audio.play();
-            }
+            // if (audio.paused) {
+            //   audio = new Audio('./audio/singing_mejiro.mp3');
+            //   audio.loop = true; // ループ再生
+            //   audio.play();
+            // }
 
-            if (audio.src.includes('singing_mejiro')) {
+            if (true) {
               audio.volume = Math.round((1 - distance.value / distanceTh) * distanceTh) / distanceTh; // distance.valueが小さくなると、音が大きくなる
 
               console.log(distance.value , previousDistance.value);
               if (distance.value < previousDistance.value) { // 距離が減った場合
-                audio_near.play();
-                message.value = '近づきました';
+
+                // distance.value が 5の倍数のとき
+                if (distance.value % 5 === 0) {
+                  // audio_near.play();
+                  await audioPlay('./audio/near.mp3'); // 説明を再生
+                  message.value = '近づきました';
+                }
               } else if (distance.value > previousDistance.value) { // 距離が増えた場合
-                audio_far.play();
-                message.value = '遠くなりました';
+                if (distance.value % 5 === 0) {
+                  // audio_near.play();
+                  await audioPlay('./audio/far.mp3'); // 説明を再生
+                  message.value = '遠くなりました';
+                }
               }
             }
             
@@ -162,7 +171,7 @@
 
           }
 
-          if (Math.abs(distance.value - previousDistance.value) > 5) previousDistance.value = distance.value; // 前回の距離を更新
+          previousDistance.value = distance.value; // 前回の距離を更新
         },
         err => {
           isWatching.value = false;
@@ -214,7 +223,7 @@
     const time = Math.round((timeData.end - timeData.start) / 1000); // 経過時間を計算
 
     appDialogRef.value.menuList[0].value = Math.round(totalDistance); // メニューリストの歩いた距離を更新
-    appDialogRef.value.menuList[1].value = time; // メニューリストの時間を更新
+    appDialogRef.value.menuList[1].value = convertTime(time); // メニューリストの時間を更新
     appDialogRef.value.openDialog(); // ダイアログを開く
 
     // 終了音を再生
@@ -247,7 +256,14 @@
   const audioPlay = async(src: string) => {
     await audioPlayer.loadAudioFile(src);
     audioPlayer.play();
-  }  
+  } 
+
+  // 秒を分秒に変換する
+  const convertTime = (time: number): string => {
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+    return `${minutes}分${seconds}秒`;
+  }
 </script>
 
 <style lang="scss" scoped>

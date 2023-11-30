@@ -123,7 +123,7 @@
             //   audio.play();
             // }
 
-            if (audio.src.includes('singing_mejiro')) {
+            if (true) {
               audio.volume = Math.round((1 - distance.value / distanceTh) * distanceTh) / distanceTh; // distance.valueが小さくなると、音が大きくなる
 
               console.log(distance.value , previousDistance.value);
@@ -131,13 +131,13 @@
 
                 // distance.value が 5の倍数のとき
                 if (distance.value % 5 === 0) {
-                  audio_near.play();
+                  // audio_near.play();
                   await audioPlay('./audio/near.mp3'); // 説明を再生
                   message.value = '近づきました';
                 }
               } else if (distance.value > previousDistance.value) { // 距離が増えた場合
                 if (distance.value % 5 === 0) {
-                  audio_near.play();
+                  // audio_near.play();
                   await audioPlay('./audio/far.mp3'); // 説明を再生
                   message.value = '遠くなりました';
                 }
