@@ -86,6 +86,7 @@
     if (navigator.geolocation) {
 
       audioPlay('./audio/start_iu_1.mp3'); // 開始音を再生
+      audioPlay('./audio/singing_mejiro_2.mp3'); // 開始音を再生
       timeData.start = Date.now(); // 開始時間を記録
 
       watchID = navigator.geolocation.watchPosition(
@@ -116,11 +117,11 @@
             
           } else if (distance.value <= distanceTh) {
 
-            if (audio.paused) {
-              audio = new Audio('./audio/singing_mejiro.mp3');
-              audio.loop = true; // ループ再生
-              audio.play();
-            }
+            // if (audio.paused) {
+            //   audio = new Audio('./audio/singing_mejiro.mp3');
+            //   audio.loop = true; // ループ再生
+            //   audio.play();
+            // }
 
             if (audio.src.includes('singing_mejiro')) {
               audio.volume = Math.round((1 - distance.value / distanceTh) * distanceTh) / distanceTh; // distance.valueが小さくなると、音が大きくなる
@@ -201,7 +202,7 @@
     const time = Math.round((timeData.end - timeData.start) / 1000); // 経過時間を計算
 
     appDialogRef.value.menuList[0].value = Math.round(totalDistance); // メニューリストの歩いた距離を更新
-    appDialogRef.value.menuList[1].value = time; // メニューリストの時間を更新
+    appDialogRef.value.menuList[1].value = convertTime(time); // メニューリストの時間を更新
     appDialogRef.value.openDialog(); // ダイアログを開く
 
     // 終了音を再生
@@ -234,7 +235,14 @@
   const audioPlay = async(src: string) => {
     await audioPlayer.loadAudioFile(src);
     audioPlayer.play();
-  }  
+}
+
+// 秒を分秒に変換する
+const convertTime = (time: number): string => {
+  const minutes = Math.floor(time / 60);
+  const seconds = time % 60;
+  return `${minutes}分${seconds}秒`;
+}
 </script>
 
 <style lang="scss" scoped>
