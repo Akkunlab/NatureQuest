@@ -73,7 +73,7 @@
   const distanceTh = 50000; // 距離の閾値
 
   // 目的地の緯度経度
-  const targetData = [{ latitude: 36.36509930953256, longitude: 140.4784272715081 }];
+  const targetData = [{ latitude: 35.6809591, longitude:139.7673068}];
 
   // const targetData = [
   //   { latitude: 36.572641705515785, longitude: 140.6397485 },
