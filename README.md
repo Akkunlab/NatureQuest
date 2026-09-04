@@ -1,42 +1,31 @@
-# Nuxt 3 Minimal Starter
+# NatureQuest
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+![NatureQuest](public/images/banner.png)
 
-## Setup
+鳥のさえずりを聞きながら自然を探索できるリラックスアプリ
 
-Make sure to install the dependencies:
+## コンセプト
+
+自然音に包まれて心が落ち着く瞬間を、もっと日常に。
+NatureQuest は「受動的に音を聞くだけ」で終わらない、探索型のリラックス体験を提供します。
+
+## 特徴
+
+- **サウンド・トレジャーハント** — 耳で宝物を探す探索ゲーム。鳥のさえずりの発生源に近づくほど音が大きくなり、イヤホンを使えば右・左・遠い・近いを直感的に把握できます。視覚に頼らず「音だけで探し当てる」体験です
+- **音声解説** — 鳥を見つけて捕まえると、その鳥の解説を音声で聞けます
+- **散歩感覚の没入** — 画面を凝視しなくても自然の世界に没入でき、心地よいリラックスへ誘います
+
+## 技術スタック
+
+- Nuxt 3 / Vue.js
+- TypeScript
+- Vuetify
+
+## セットアップ
 
 ```bash
-# yarn
-yarn install
-
-# npm
 npm install
-
-# pnpm
-pnpm install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`
-
-```bash
 npm run dev
 ```
 
-## Production
-
-Build the application for production:
-
-```bash
-npm run build
-```
-
-Locally preview production build:
-
-```bash
-npm run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+http://localhost:3000 で起動します。
